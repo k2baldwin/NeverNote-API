@@ -51,8 +51,7 @@ public class NoteControllerTest extends GenericRequestBuilder{
     }
 
     private NoteBook injectNoteBook(){
-        NoteBook noteBook = new NoteBook();
-        return repository.createNoteBook(noteBook);
+        return repository.createNoteBook();
     }
 
     private ResultActions getNote(long id) throws Exception {

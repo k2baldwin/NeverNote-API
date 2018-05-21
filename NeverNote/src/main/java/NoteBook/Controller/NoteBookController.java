@@ -32,8 +32,8 @@ public class NoteBookController {
 
     //Creates a notebook
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
-	public ResponseEntity<NoteBook> createNoteBook(@RequestBody NoteBook noteBook) {
-		NoteBook createdNoteBook = repository.createNoteBook(noteBook);
+	public ResponseEntity<NoteBook> createNoteBook() {
+		NoteBook createdNoteBook = repository.createNoteBook();
 		return new ResponseEntity<>(createdNoteBook, HttpStatus.CREATED);
 	}
 

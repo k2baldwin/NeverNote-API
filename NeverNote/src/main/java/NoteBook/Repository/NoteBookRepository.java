@@ -94,7 +94,8 @@ public class NoteBookRepository {
         }
     }
 
-    public NoteBook createNoteBook(NoteBook noteBook) {
+    public NoteBook createNoteBook() {
+        NoteBook noteBook = new NoteBook();
         NoteBooks.add(noteBook);
         noteBook.setId(noteBookIdGenerator.getNextId());
         return noteBook;
