@@ -1,0 +1,8 @@
+NoteBook/Domain/NoteBook.class
+NoteBook/Domain/Identifiable.class
+NoteBook/Application.class
+NoteBook/Controller/NoteBookController.class
+NoteBook/Domain/Note.class
+NoteBook/Repository/NoteBookRepository.class
+NoteBook/Repository/IdGenerator.class
+NoteBook/Controller/NoteController.class

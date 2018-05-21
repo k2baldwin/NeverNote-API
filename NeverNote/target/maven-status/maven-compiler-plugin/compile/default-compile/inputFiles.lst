@@ -1,0 +1,8 @@
+/Users/jamesB/NeverNote-API/NeverNote/src/main/java/NoteBook/Application.java
+/Users/jamesB/NeverNote-API/NeverNote/src/main/java/NoteBook/Repository/NoteBookRepository.java
+/Users/jamesB/NeverNote-API/NeverNote/src/main/java/NoteBook/Controller/NoteBookController.java
+/Users/jamesB/NeverNote-API/NeverNote/src/main/java/NoteBook/Domain/Note.java
+/Users/jamesB/NeverNote-API/NeverNote/src/main/java/NoteBook/Domain/NoteBook.java
+/Users/jamesB/NeverNote-API/NeverNote/src/main/java/NoteBook/Repository/IdGenerator.java
+/Users/jamesB/NeverNote-API/NeverNote/src/main/java/NoteBook/Controller/NoteController.java
+/Users/jamesB/NeverNote-API/NeverNote/src/main/java/NoteBook/Domain/Identifiable.java
