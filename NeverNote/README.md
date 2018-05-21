@@ -24,7 +24,7 @@ To start the NeverNote API execute the following command from the directory wher
 
     mvn spring-boot:run
     
-This will start the web service on Https://localhost:8080
+This will start the web service on http://localhost:8080
 
 ## REST Endpoints
 
