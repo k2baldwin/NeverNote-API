@@ -33,10 +33,10 @@ public class NoteController {
     //Returns a note
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<Note> findNoteById(@PathVariable Long id) {
-        Optional<Note> note = repository.findNoteById(id);
+        Note note = repository.findNoteById(id);
 
-        if (note.isPresent()) {
-            return new ResponseEntity<>(note.get(), HttpStatus.OK);
+        if (note != null) {
+            return new ResponseEntity<>(note, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -53,12 +53,12 @@ public class NoteController {
     //Updates a note
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json")
     public ResponseEntity<Note> updateNote(@PathVariable Long id, @RequestBody Note updatedNote) {
-        Optional<Note> note = repository.findNoteById(id);
-        if (note.isPresent()) {
+        Note note = repository.findNoteById(id);
+        if (note != null) {
             boolean wasUpdated = repository.updateNote(id, updatedNote);
                 if (wasUpdated) {
                     //Return updated note with 200 if update succeeds
-                    return new ResponseEntity<>(repository.findNoteById(id).get(), HttpStatus.OK);
+                    return new ResponseEntity<>(repository.findNoteById(id), HttpStatus.OK);
                 }
                 else{
                     //Return 500 if note exists but update fails

@@ -3,9 +3,9 @@ package NoteBook.Repository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.ArrayList;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,22 +20,25 @@ public class NoteBookRepository {
     @Autowired
     private IdGenerator noteIdGenerator;
 
-    private List<Note> Notes = Collections.synchronizedList(new ArrayList<>());
-    private List<NoteBook> NoteBooks = Collections.synchronizedList(new ArrayList<>());
+    private ConcurrentHashMap<Long,Note> Notes = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Long,NoteBook> NoteBooks = new ConcurrentHashMap<>();
 
 
 
     //Public Methods
 
-    public Optional<Note> findNoteById(Long id) {return Notes.stream().filter(e -> e.getId().equals(id)).findFirst();
+    public Note findNoteById(Long id) {
+        return Notes.get(id);
     }
 
-    public Optional<NoteBook> findNoteBookById(Long id) {
-        return NoteBooks.stream().filter(e -> e.getId().equals(id)).findFirst();
+    public NoteBook findNoteBookById(Long id) {
+        return NoteBooks.get(id);
     }
 
-    public List<Note> findNotesByNoteBookId(Long id, String tag) {
-        List<Note> notesInNoteBook = Notes.stream().filter(e -> e.getNoteBookId().equals(id)).collect(Collectors.toList());
+    public Collection<Note> findNotesByNoteBookId(Long id, String tag) {
+        Collection<Note> notesInNoteBook =
+                Notes.entrySet().stream().filter(e -> e.getValue().getNoteBookId().equals(id))
+                        .map(Map.Entry::getValue).collect(Collectors.toSet());
         if(tag==null) {
             return notesInNoteBook;
         }
@@ -48,8 +51,8 @@ public class NoteBookRepository {
         }
     }
 
-    public List<NoteBook> findAllNoteBooks() {
-        return NoteBooks;
+    public Collection<NoteBook> findAllNoteBooks() {
+        return NoteBooks.values();
     }
 
     public void clear() {
@@ -60,27 +63,27 @@ public class NoteBookRepository {
     public boolean deleteNoteBook(Long id) {
         //simulating cascade delete, since we don't have FK on in memory database
         cascadeDeleteNotes(id);
-        return NoteBooks.removeIf(element -> element.getId().equals(id));
+        return NoteBooks.remove(id,NoteBooks.get(id));
     }
 
     public boolean deleteNote(Long id) {
-        return Notes.removeIf(element -> element.getId().equals(id));
+        return Notes.remove(id,Notes.get(id));
     }
 
     public boolean createNoteInNoteBook(Long id, Note note) {
-        Optional<NoteBook> noteBook = findNoteBookById(id);
-        if(noteBook.isPresent()) {
+        NoteBook noteBook = findNoteBookById(id);
+        if(noteBook!=null) {
             note.setNoteBookId(id);
             createNote(note);
-            return noteBook.isPresent();
+            return true;
         }
         else return false;
     }
 
     public Note createNote(Note note) {
-        Notes.add(note);
-        note.setCreated(LocalDateTime.now());
         note.setId(noteIdGenerator.getNextId());
+        note.setCreated(LocalDateTime.now());
+        Notes.put(note.getId(),note);
         return note;
     }
 
@@ -88,16 +91,18 @@ public class NoteBookRepository {
         if (updated == null) {
             return false;
         } else {
-            Optional<Note> note = findNoteById(id);
-            note.ifPresent(original -> updateNoteIfExists(original, updated));
-            return note.isPresent();
+            Note note = findNoteById(id);
+            if(note!=null) {
+                updateNoteIfExists(note, updated);
+            }
+            return true;
         }
     }
 
     public NoteBook createNoteBook() {
         NoteBook noteBook = new NoteBook();
-        NoteBooks.add(noteBook);
         noteBook.setId(noteBookIdGenerator.getNextId());
+        NoteBooks.put(noteBook.getId(),noteBook);
         return noteBook;
     }
 
@@ -105,7 +110,7 @@ public class NoteBookRepository {
 
     //Private Methods
 
-    private List<Note> filterNotesByTag(String tag, List<Note> notes) {
+    private List<Note> filterNotesByTag(String tag, Collection<Note> notes) {
         List<Note> notesToReturn = new ArrayList<Note>();
         for (Note i : notes) {
             String[] tags = i.getTags();
@@ -130,7 +135,12 @@ public class NoteBookRepository {
     }
 
     private void cascadeDeleteNotes(Long id){
-        Notes.removeIf(element -> element.getNoteBookId().equals(id));
+        Collection<Note> notes = findNotesByNoteBookId(id, null);
+        for(Note i:notes){
+            if(i.getNoteBookId().equals(id)){
+                Notes.remove(i.getId());
+            }
+        }
     }
 
 }
