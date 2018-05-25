@@ -3,6 +3,7 @@ package NoteBook.Controller;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,7 @@ public class NoteBookController {
 
     //Returns a notebook
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<NoteBook> findNoteBookById(@PathVariable Long id) {
+    public ResponseEntity<NoteBook> findNoteBookById(@PathVariable UUID id) {
         NoteBook noteBook = repository.findNoteBookById(id);
         if (noteBook != null) {
             return new ResponseEntity<>(noteBook, HttpStatus.OK);
@@ -50,7 +51,7 @@ public class NoteBookController {
 
     //Deletes a notebook
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> deleteNoteBook(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteNoteBook(@PathVariable UUID id) {
         boolean wasDeleted = repository.deleteNoteBook(id);
         HttpStatus responseStatus = wasDeleted ? HttpStatus.NO_CONTENT : HttpStatus.NOT_FOUND;
         return new ResponseEntity<>(responseStatus);
@@ -58,7 +59,7 @@ public class NoteBookController {
 
     //Returns all notes in a notebook
     @RequestMapping(value = "/{id}/note", method = RequestMethod.GET)
-    public ResponseEntity<Collection<Note>> findNotesByNoteBookId(@PathVariable Long id, @RequestParam(value="tag",required=false) String tag) {
+    public ResponseEntity<Collection<Note>> findNotesByNoteBookId(@PathVariable UUID id, @RequestParam(value="tag",required=false) String tag) {
         NoteBook noteBook = repository.findNoteBookById(id);
         if (noteBook != null) {
             //Empty set instead of 404 if notebook doesn't have any notes
@@ -70,7 +71,7 @@ public class NoteBookController {
 
     //Creates a note in a notebook
     @RequestMapping(value = "/{id}/note", method = RequestMethod.POST, consumes = "application/json")
-    public ResponseEntity<NoteBook> addNoteToNoteBook(@PathVariable Long id, @RequestBody Note note) {
+    public ResponseEntity<NoteBook> addNoteToNoteBook(@PathVariable UUID id, @RequestBody Note note) {
         NoteBook noteBook = repository.findNoteBookById(id);
         if (noteBook != null) {
             boolean wasUpdated = repository.createNoteInNoteBook(id, note);

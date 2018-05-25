@@ -1,5 +1,6 @@
 package NoteBook.Repository;
 
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -15,4 +16,6 @@ public class IdGenerator {
 	public long getNextId() {
 		return nextId.getAndIncrement();
 	}
+
+	public UUID getRandomUUID() {return UUID.randomUUID();}
 }

@@ -20,22 +20,22 @@ public class NoteBookRepository {
     @Autowired
     private IdGenerator noteIdGenerator;
 
-    private ConcurrentHashMap<Long,Note> Notes = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<Long,NoteBook> NoteBooks = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<UUID,Note> Notes = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<UUID,NoteBook> NoteBooks = new ConcurrentHashMap<>();
 
 
 
     //Public Methods
 
-    public Note findNoteById(Long id) {
+    public Note findNoteById(UUID id) {
         return Notes.get(id);
     }
 
-    public NoteBook findNoteBookById(Long id) {
+    public NoteBook findNoteBookById(UUID id) {
         return NoteBooks.get(id);
     }
 
-    public Collection<Note> findNotesByNoteBookId(Long id, String tag) {
+    public Collection<Note> findNotesByNoteBookId(UUID id, String tag) {
         Collection<Note> notesInNoteBook =
                 Notes.entrySet().stream().filter(e -> e.getValue().getNoteBookId().equals(id))
                         .map(Map.Entry::getValue).collect(Collectors.toSet());
@@ -44,7 +44,7 @@ public class NoteBookRepository {
         }
         else {
             if (notesInNoteBook.size() > 0) {
-                List<Note> notesWithTag = filterNotesByTag(tag, notesInNoteBook);
+                Collection<Note> notesWithTag = filterNotesByTag(tag, notesInNoteBook);
                 return notesWithTag;
             }
             else return notesInNoteBook;
@@ -60,17 +60,17 @@ public class NoteBookRepository {
         NoteBooks.clear();
     }
 
-    public boolean deleteNoteBook(Long id) {
+    public boolean deleteNoteBook(UUID id) {
         //simulating cascade delete, since we don't have FK on in memory database
         cascadeDeleteNotes(id);
         return NoteBooks.remove(id,NoteBooks.get(id));
     }
 
-    public boolean deleteNote(Long id) {
+    public boolean deleteNote(UUID id) {
         return Notes.remove(id,Notes.get(id));
     }
 
-    public boolean createNoteInNoteBook(Long id, Note note) {
+    public boolean createNoteInNoteBook(UUID id, Note note) {
         NoteBook noteBook = findNoteBookById(id);
         if(noteBook!=null) {
             note.setNoteBookId(id);
@@ -81,13 +81,13 @@ public class NoteBookRepository {
     }
 
     public Note createNote(Note note) {
-        note.setId(noteIdGenerator.getNextId());
+        note.setId(noteIdGenerator.getRandomUUID());
         note.setCreated(LocalDateTime.now());
         Notes.put(note.getId(),note);
         return note;
     }
 
-    public boolean updateNote(Long id, Note updated) {
+    public boolean updateNote(UUID id, Note updated) {
         if (updated == null) {
             return false;
         } else {
@@ -101,7 +101,7 @@ public class NoteBookRepository {
 
     public NoteBook createNoteBook() {
         NoteBook noteBook = new NoteBook();
-        noteBook.setId(noteBookIdGenerator.getNextId());
+        noteBook.setId(noteBookIdGenerator.getRandomUUID());
         NoteBooks.put(noteBook.getId(),noteBook);
         return noteBook;
     }
@@ -134,7 +134,7 @@ public class NoteBookRepository {
         original.setLastModified(LocalDateTime.now());
     }
 
-    private void cascadeDeleteNotes(Long id){
+    private void cascadeDeleteNotes(UUID id){
         Collection<Note> notes = findNotesByNoteBookId(id, null);
         for(Note i:notes){
             if(i.getNoteBookId().equals(id)){

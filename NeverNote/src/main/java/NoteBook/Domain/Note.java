@@ -1,11 +1,12 @@
 package NoteBook.Domain;
 import java.time.*;
 import java.util.List;
+import java.util.UUID;
 
 public class Note implements Identifiable {
 
-	private Long id;
-	private Long noteBookId;
+	private UUID id;
+	private UUID noteBookId;
 	private String title;
 	private String body;
 	private String[] tags;
@@ -13,20 +14,20 @@ public class Note implements Identifiable {
 	private LocalDateTime lastModified;
 	
 	@Override
-	public Long getId() {
+	public UUID getId() {
 		return id;
 	}
 	
 	@Override
-	public void setId(Long id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 
-	public Long getNoteBookId(){
+	public UUID getNoteBookId(){
 		return noteBookId;
 	}
 
-	public void setNoteBookId(Long noteBookId){
+	public void setNoteBookId(UUID noteBookId){
 		this.noteBookId =  noteBookId;
 	}
 	

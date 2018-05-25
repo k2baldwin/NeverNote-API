@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.time.*;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.ExposesResourceFor;
@@ -32,7 +33,7 @@ public class NoteController {
 
     //Returns a note
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Note> findNoteById(@PathVariable Long id) {
+    public ResponseEntity<Note> findNoteById(@PathVariable UUID id) {
         Note note = repository.findNoteById(id);
 
         if (note != null) {
@@ -44,7 +45,7 @@ public class NoteController {
 
     //Deletes a note
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> deleteNote(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteNote(@PathVariable UUID id) {
         boolean wasDeleted = repository.deleteNote(id);
         HttpStatus responseStatus = wasDeleted ? HttpStatus.NO_CONTENT : HttpStatus.NOT_FOUND;
         return new ResponseEntity<>(responseStatus);
@@ -52,7 +53,7 @@ public class NoteController {
 
     //Updates a note
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json")
-    public ResponseEntity<Note> updateNote(@PathVariable Long id, @RequestBody Note updatedNote) {
+    public ResponseEntity<Note> updateNote(@PathVariable UUID id, @RequestBody Note updatedNote) {
         Note note = repository.findNoteById(id);
         if (note != null) {
             boolean wasUpdated = repository.updateNote(id, updatedNote);

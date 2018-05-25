@@ -1,5 +1,7 @@
 package NoteBook.Domain;
 
-public interface Identifiable extends org.springframework.hateoas.Identifiable<Long> {
-	public void setId(Long id);
+import java.util.UUID;
+
+public interface Identifiable extends org.springframework.hateoas.Identifiable<UUID> {
+	public void setId(UUID id);
 }

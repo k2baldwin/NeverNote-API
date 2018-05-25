@@ -6,6 +6,7 @@ import NoteBook.Test.Controller.Helpers.GenericRequestBuilder;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import NoteBook.Domain.*;
+import java.util.UUID;
 
 
 import org.junit.Before;
@@ -23,7 +24,7 @@ public class NoteBookControllerTest extends GenericRequestBuilder{
 
     private static final String VALID_NOTE = "{\"title\": \"test title\", \"body\": \"test body\", \"tags\":[\"test\",\"tags\"]}";
     private static final String VALID_NOTEBOOK = "{}";
-    private static Long Nonexistent_ID = 1000L;
+    private static UUID Nonexistent_ID = UUID.randomUUID();
 
     @Autowired
     private NoteBookRepository repository;
@@ -56,15 +57,15 @@ public class NoteBookControllerTest extends GenericRequestBuilder{
         return get("/notebook");
     }
 
-    private ResultActions getNoteBookById(long id) throws Exception {
+    private ResultActions getNoteBookById(UUID id) throws Exception {
         return get("/notebook/{id}", id);
     }
 
-    private ResultActions deleteNoteBook(long id) throws Exception {
+    private ResultActions deleteNoteBook(UUID id) throws Exception {
         return delete("/notebook/{id}", id);
     }
 
-    private ResultActions createNoteInNoteBook(long id) throws Exception {
+    private ResultActions createNoteInNoteBook(UUID id) throws Exception {
         return post("/notebook/{id}/note",VALID_NOTE, id);
     }
 

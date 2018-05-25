@@ -3,6 +3,7 @@ package NoteBook.Test.Controller;
 import NoteBook.Repository.NoteBookRepository;
 import NoteBook.Domain.*;
 import NoteBook.Test.Controller.Helpers.GenericRequestBuilder;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class NoteControllerTest extends GenericRequestBuilder{
 
-    private static Long Nonexistent_ID = 1000L;
+    private static UUID Nonexistent_ID = UUID.randomUUID();
     private static final String NOTE_UPDATE = "{\"title\": \"updated test title\", \"body\": \"updated test body\", \"tags\":[\"updated\",\"tags\"]}";
 
     @Autowired
@@ -54,15 +55,15 @@ public class NoteControllerTest extends GenericRequestBuilder{
         return repository.createNoteBook();
     }
 
-    private ResultActions getNote(long id) throws Exception {
+    private ResultActions getNote(UUID id) throws Exception {
         return get("/note/{id}", id);
     }
 
-    private ResultActions deleteNote(long id) throws Exception {
+    private ResultActions deleteNote(UUID id) throws Exception {
         return delete("/note/{id}", id);
     }
 
-    private ResultActions updateNote(long id, Note updatedNote) throws Exception {
+    private ResultActions updateNote(UUID id, Note updatedNote) throws Exception {
             return put("/note/{id}", updatedNote, id);
     }
 
